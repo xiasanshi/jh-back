@@ -5,6 +5,8 @@
 ## Build Setup
 
 ``` bash
+
+聚汇后台项目，j基于vue动态路由
 # install dependencies
 npm install
 
