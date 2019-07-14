@@ -10,15 +10,7 @@ module.exports = {
         // Paths
         assetsSubDirectory: 'static',
         assetsPublicPath: '/',
-        proxyTable: {
-            '/api': {
-                target: 'http://test.fanzone.vip:8081/fanZone',
-                changeOrigin: true,
-                pathRewrite: {
-                    '^/api': ''
-                }
-            },
-        },
+        proxyTable: {},
 
         // Various Dev Server settings
         host: 'localhost', // can be overwritten by process.env.HOST
