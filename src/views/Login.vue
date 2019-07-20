@@ -78,8 +78,9 @@ export default {
             } else {
               sessionStorage.setItem('user', JSON.stringify(user))
               sessionStorage.setItem('token', user['token'])
-              sessionStorage.setItem('routes', JSON.stringify(user))
-              this.add_Routes(['ROLE_brand_list'])
+              let addroutes = ['ROLE_brand_create', 'ROLE_brand_list']
+              sessionStorage.setItem('routes', JSON.stringify(addroutes))
+              this.add_Routes(addroutes)
               // this.$router.push({ path: '/brand' })
             }
           })

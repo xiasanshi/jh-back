@@ -1,34 +1,29 @@
 <template>
     <el-form ref="form" :model="form" :rules="rules" label-width="120px" @submit.prevent="onSubmit"
              style="margin:20px;width:60%;min-width:600px;">
-        <el-form-item label="商家名称" prop="bussinessName">
-            <el-input v-model="form.bussinessName" ></el-input>
-        </el-form-item>
         <el-form-item label="品牌名称">
-            <el-input v-model="form.mallName"></el-input>
+            <el-input v-model="form.name"></el-input>
         </el-form-item>
-        <el-form-item label="联系人" prop="bussinessUserName">
-            <el-input v-model="form.bussinessUserName"></el-input>
+        <el-form-item label="联系人" prop="principal">
+            <el-input v-model="form.principal"></el-input>
         </el-form-item>
-        <el-form-item label="联系电话" prop="bussinessPhone">
-            <el-input v-model="form.bussinessPhone" :max-length="12" ></el-input>
+        <el-form-item label="联系电话" prop="phone">
+            <el-input v-model="form.phone" :max-length="12" ></el-input>
         </el-form-item>
-        <el-form-item label="店铺电话" prop="telephone">
-            <el-input v-model="form.telephone"></el-input>
-        </el-form-item>
-        <el-form-item label="店铺地址">
-            <el-input v-model="form.bussinessAddress"></el-input>
-        </el-form-item>
-        <el-form-item label="地址链接">
-            <el-input v-model="form.bussinessPosition"></el-input>
+        <el-form-item label="分类" prop="telephone">
+            <el-input v-model="form.classfy"></el-input>
         </el-form-item>
         <el-form-item label="商家介绍">
-            <el-input v-model="form.bussinessIntroduce"></el-input>
+            <div class="content">
+                <vue-html5-editor :content="content" :height="400"
+                                  @change="updateData"></vue-html5-editor>
+
+            </div>
         </el-form-item>
         <el-form-item  label="商家logo">
             <el-upload
                 class="upload-demo"
-                action="http://wx.qingzhao.net.cn/fanZone/common/saveImage"
+                action="http://192.168.71.134:5000/v1/image/upload"
                 :on-preview="handlePreview"
                 :on-success="uploadSuccess"
                 :file-list="fileList2"
@@ -40,28 +35,6 @@
                 <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
             </el-upload>
         </el-form-item>
-        <el-form-item style="text-align: center"><p><b>--其他信息--</b></p></el-form-item>
-        <el-form-item label="小程序名称">
-            <el-input v-model="form.bussinessWechatName"></el-input>
-        </el-form-item>
-        <el-form-item label="公众号链接">
-            <el-input v-model="form.bussinessWechatUrl"></el-input>
-        </el-form-item>
-        <el-form-item label="会员链接">
-            <el-input v-model="form.memberUrl"></el-input>
-        </el-form-item>
-        <el-form-item label="排队链接">
-            <el-input v-model="form.queueUrl"></el-input>
-        </el-form-item>
-        <el-form-item label="外卖链接">
-            <el-input v-model="form.takeoutUrl"></el-input>
-        </el-form-item>
-        <el-form-item label="预定链接">
-            <el-input v-model="form.reserveUrl"></el-input>
-        </el-form-item>
-        <el-form-item label="点餐链接">
-            <el-input v-model="form.orderUrl"></el-input>
-        </el-form-item>
 
         <el-form-item>
             <el-button type="primary" @click="submitForm('form',form)">立即创建</el-button>
@@ -72,59 +45,45 @@
 </template>
 
 <script>
-import {saveBusiness} from '../../api/api'
 
 export default {
   name: 'create',
   data () {
     return {
-      form: {
-        bussinessCode: '', // shangjia
-        bussinessName: '',
-        bussinessUserName: '',
-        bussinessProduct: '',
-        bussinessCategory: '', // 商家种类0
-        bussinessRank: '', // 业态（火锅，中式，日式）
-        openid: '',
-        bussinessAddress: '', // 商家地址
-        bussinessPhone: '', // 联系人电话
-        bussinessPosition: '', // 商家位置
-        bussinessIntroduce: '', // 商家介绍
-        bussinessIcon: '', // 商家logo
-        telephone: '', // 店铺座机
-        bussinessWechatUrl: '', // 公众号url
-        bussinessWechatName: '', // 公众号名称
-        memberUrl: '', // 会员url
-        queueUrl: '', // 排队
-        takeoutUrl: '', // 外卖
-        orderUrl: '', // 点餐
-        reserveUrl: '', // 预定
-        ImageId: '',
-        mallName: ''
-      },
+      editLoading: false,
+      content: '',
       fileList2: [],
+      form: {
+        name: '', // 品牌名称
+        desc: '', // 描述
+        icon: '', // logo
+        images: '', // 品牌宣传图
+        classfy: '', // 业态
+        principal: '', // 联系人
+        phone: '' // 联系电话
+      },
       rules: {
-        bussinessName: [
+        name: [
           { required: true, message: '请输入商家名称', trigger: 'blur' },
           { min: 0, max: 100, message: '长度在 3 到 5 个字符', trigger: 'blur' }
         ],
-        bussinessUserName: [
+        principal: [
           { required: true, message: '请输入联系人名称', trigger: 'blur' },
           { min: 0, max: 100, message: '', trigger: 'blur' }
         ],
-        bussinessPhone: [
+        phone: [
           { required: true, message: '请输入联系人手机号', trigger: 'blur' },
           { min: 11, max: 11, message: '', trigger: 'blur' }
-        ],
-        telephone: [
-          { required: true, message: '请输入店铺电话', trigger: 'blur' },
-          { min: 0, max: 12, message: '', trigger: 'blur' }
         ]
       }
     }
   },
 
   methods: {
+    updateData (e) {
+      console.log(e)
+      this.form.desc = e
+    },
     submitForm (formName, form) {
       // alert(this.$refs[formName])
       this.$refs[formName].validate((valid) => {
@@ -137,24 +96,20 @@ export default {
         }
       })
     },
+    handlePreview () {},
     resetForm (formName) {
       this.$refs[formName].resetFields()
-    },
-    getBusiness () {
-      alert('dd')
     },
     onSubmit (val) {
       this.$confirm('确认提交吗？', '提示', {}).then(() => {
         this.editLoading = true
-        // NProgress.start();
-        // let para = Object.assign({}, this.form);
-        // alert(val.bussinessAddress);
-        // let para = {'bussinessForm': val}
-        saveBusiness(val).then((res) => {
+        let t = this.$Request
+        t.setResource('brand')
+        t.add(val).then((res) => {
           this.editLoading = false
 
           // NProgress.done();
-          if (res.data.code === 0) {
+          if (res.data.code === 200) {
             this.$message({
               message: '提交成功',
               type: 'success'
@@ -167,20 +122,17 @@ export default {
           }
         })
 
-        /* for(var i in para){
-                        alert(para[i])
-                    } */
-        // para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
+        this.editLoading = false
       }).catch(() => {
-
+        this.editLoading = false
       })
     },
     handleAvatarSuccess (res, file) {
       this.imageUrl = URL.createObjectURL(file.raw)
     },
     uploadSuccess (response, file) {
-      console.log(response.data.image.imgUrl)
-      this.form.bussinessIcon = response.data.image.imgUrl
+      console.log(response)
+      this.form.icon = response.data.id
     },
     beforeAvatarUpload (file) {
       const isJPG = file.type === 'image/jpeg'

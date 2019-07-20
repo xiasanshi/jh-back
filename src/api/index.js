@@ -4,7 +4,8 @@ import axios from 'axios'
 export default api
 
 // axios 配置
-axios.defaults.timeout = 8000
+axios.defaults.timeout = 10000
+
 // axios.defaults.baseURL = 'https://api.github.com'
 
 export class Request {
@@ -36,5 +37,21 @@ export class Request {
 
     getList (params) {
       return axios.post(`${this.url}/${this.resource}/list`, params)
+    }
+}
+
+export class Uplaod {
+    url = 'http://192.168.71.134:5000//v1/'
+
+    constructor (url) {
+      this.url = url
+    }
+
+    addImg (params) {
+      return axios.post(`${this.url}image/upload`)
+    }
+
+    getImgUrl (id) {
+      return `${this.url}image/storage/${id}`
     }
 }

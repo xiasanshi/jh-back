@@ -7,11 +7,11 @@ import router from './router/index'
 import './assets/element-#26A2FF/index.css'
 import './assets/font_702598_vzrrja5y3qd/iconfont.css'
 import ElementUI from 'element-ui'
+import initRichText  from './common/js/initHTMLEditor'
 import {Request} from './api/index'
 import Vuex from 'vuex'
 import VueRouter from 'vue-router'
 import axios from 'axios/index'
-
 
 Vue.use(VueRouter)
 Vue.config.productionTip = true
@@ -20,7 +20,7 @@ Vue.use(ElementUI)
 // Vue.use(VueRouter)
 let resq = new Request('http://192.168.71.134:5000/v1')
 Vue.prototype.$Request = resq
-// Vue.prototype.$cmt = cmt
+initRichText()
 sessionStorage.setItem('businessId', 'FWRXB0000001')
 if (sessionStorage.getItem('user')) {
   store.dispatch('add_Routes', JSON.parse(sessionStorage.getItem('routes')))
@@ -57,7 +57,7 @@ router.beforeEach((to, from, next) => {
   //   sessionStorage.removeItem('user')
   // }
   if (!sessionStorage.getItem('token') && to.path !== '/login') {
-    next({ path: '/login' })
+    next({path: '/login'})
   } else {
     next()
   }
